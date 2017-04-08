@@ -22,6 +22,13 @@ const wss = new WSS({
   server: server
 });
 
+const broadcastMessage = (wss, message) => {
+  wss.clients.forEach(client => {
+    client.send(message)
+  })
+}
+
+
 // When a connection is established
 wss.on("connection", socket => {
   console.log("Opened connection ");
@@ -34,6 +41,7 @@ wss.on("connection", socket => {
 
   // When data is received
   socket.on("message", message => {
+    broadcastMessage(wss, message);
     socket.send(
       JSON.stringify({
         message: message,
