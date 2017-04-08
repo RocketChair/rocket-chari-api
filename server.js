@@ -51,7 +51,7 @@ wss.on("connection", socket => {
       if((parsedMessage.type === 'data') && (parsedMessage.source === 'iot')) {
         console.log('Iot messaged')
         //Add sitting time if sitting
-        if(message.rocketChair) {
+        if(parsedMessage.rocketChair) {
           // Sitting, increase timer
           console.log('Increase sitting')
           // sittingTimer.start()
