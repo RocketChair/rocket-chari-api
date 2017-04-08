@@ -30,7 +30,7 @@ class AlertAction {
             if(!this.sittingState) {
                 //== Not sitting before, start sitting
                 this.sittingState = 1;
-                this.sittingCounter.resume()
+                this.sittingCounter.restart()
                 this.notSittingCounter.restart()
             }
 
@@ -47,7 +47,7 @@ class AlertAction {
             if(this.sittingState) {
                 //== Start not sitting
                 this.sittingState = 0;
-                this.notSittingCounter.resume();
+                this.notSittingCounter.restart();
                 this.sittingCounter.restart()
             }
 
