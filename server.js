@@ -18,13 +18,13 @@ const server = http.createServer((request, response) => {
 server.listen(port_number);
 
 const { parseAction, parseAlert } = require('./actions')
+const config = require('./config')
+const alerts = require('./alerts')
 
 // Start the server
 const wss = new WSS({
   server: server
 });
-
-
 
 const broadcastMessage = (wss, message) => {
   wss.clients.forEach(client => {
@@ -37,38 +37,47 @@ const broadcastMessage = (wss, message) => {
 wss.on("connection", socket => {
   console.log("Opened connection ");
 
-  let actionsHistory = ['STITIN', 'SITING', 'WALKING', 'RUNNING', 'SITIG'];
-
-  // Send data back to the client
-  const json = JSON.stringify({
-    message: "Gotcha"
-  });
-  socket.send(json);
-
-
   // When data is received
   socket.on("message", message => {
-    let parsedMessage;
-    try {
+    let sittingTimer = { getTime : () => {return 50*60} }
+
+    // try {
+      //Parse data from string
       parsedMessage = JSON.parse(message)
-      console.log(`Message received: [type: ${parsedMessage.type}`);
+      console.log(`Message received: [type: ${parsedMessage.type}]`);
       broadcastMessage(wss, message);
+      console.log(`type: ${parsedMessage.type}`)
+      console.log(`source: ${parsedMessage.source}`)
+      if((parsedMessage.type === 'data') && (parsedMessage.source === 'iot')) {
+        console.log('Iot messaged')
+        //Add sitting time if sitting
+        if(message.rocketChair) {
+          // Sitting, increase timer
+          console.log('Increase sitting')
+          // sittingTimer.start()
+          // notSittingTimer.stop()
+        } else {
+          // Someone is not sitting
+          console.log('Increase notsitting')
+          // sittingTimer.stop();
+          // notSittingTimer.start();
+        }
 
-      if(message.type === 'data' && message.source === 'iot') {
-
+        if(sittingTimer.getTime() > config.MAX_SITTING_TIME) {
+          socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR))
+        }
       }
 
       if(message.type === 'data' && message.source === 'phone') {
+        actions.parsePhoneData(wss, message.data)
 
       }
-
-
-    } catch(err) {
-      socket.send(JSON.stringify({
-        type: 'message',
-        message: 'Error message'
-      }))
-    }
+    // } catch(err) {
+    //   socket.send(JSON.stringify({
+    //     type: 'message',
+    //     message: JSON.stringify(err)
+    //   }))
+    // }
   });
 
   // The connection was closed
