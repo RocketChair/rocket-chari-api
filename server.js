@@ -21,7 +21,7 @@ server.listen(port_number);
 const config = require("./config");
 const alerts = require("./alerts");
 
-const AlertAction = require('./actions/alertAction');
+const AlertAction = require("./actions/alertAction");
 
 // Start the server
 const wss = new WSS({
@@ -49,22 +49,22 @@ wss.on("connection", socket => {
     let lastAlertTime = new Date().getTime();
 
     // try {
-      //== Parse data from string
-      parsedMessage = JSON.parse(message);
-      console.log(`Message received: [type: ${parsedMessage.type}]`);
-      console.log(`Message source: [type: ${parsedMessage.source}]`);
-      console.log(`Message data: [type: ${parsedMessage.data}]`);
+    //== Parse data from string
+    parsedMessage = JSON.parse(message);
+    console.log(`Message received: [type: ${parsedMessage.type}]`);
+    console.log(`Message source: [type: ${parsedMessage.source}]`);
+    console.log(`Message data: [type: ${parsedMessage.data}]`);
 
-      broadcastMessage(wss, message);
+    broadcastMessage(wss, message);
 
-      if((parsedMessage.type === 'data') && (parsedMessage.source === 'iot')) {
-        alertAction.parseData(parsedMessage);
-      }
+    if (parsedMessage.type === "data" && parsedMessage.source === "iot") {
+      alertAction.parseData(parsedMessage);
+    }
 
-      if (parsedMessage.type === "data" && parsedMessage.source === "phone") {
-        console.log("Phone 11111", message.data.moving);
-        phoneAction.setState(message.data.moving);
-      }
+    if (parsedMessage.type === "data" && parsedMessage.source === "phone") {
+      console.log("Phone 11111", parsedMessage.data.moving);
+      phoneAction.setState(parsedMessage.data.moving);
+    }
     // } catch (err) {
     //   socket.send(
     //     JSON.stringify({
