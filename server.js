@@ -2,6 +2,15 @@ const http = require("http");
 const port_number = process.env.PORT || 8880;
 const WSS = require("ws").Server;
 const server = http.createServer((request, response) => {
+  response.setHeader("Access-Control-Allow-Origin", "*");
+  response.setHeader("Access-Control-Request-Method", "*");
+  response.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET");
+  response.setHeader("Access-Control-Allow-Headers", "*");
+  if (req.method === "OPTIONS") {
+    response.writeHead(200);
+    response.end();
+    return;
+  }
   console.log("request");
   response.end("Hello");
 });
