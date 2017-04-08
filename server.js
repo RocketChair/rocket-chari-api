@@ -38,56 +38,64 @@ wss.on("connection", socket => {
   const phoneAction = new PhoneAction(socket);
 
   socket.on("message", message => {
-    let sittingTimer = { getTime : () => {return 50*60} }
-    let lastAlertTime = (new Date()).getTime();
+    let sittingTimer = {
+      getTime: () => {
+        return 50 * 60;
+      }
+    };
+    let lastAlertTime = new Date().getTime();
 
     try {
       //== Parse data from string
-      parsedMessage = JSON.parse(message)
+      parsedMessage = JSON.parse(message);
       console.log(`Message received: [type: ${parsedMessage.type}]`);
       broadcastMessage(wss, message);
       // console.log(`type: ${parsedMessage.type}`)
       // console.log(`source: ${parsedMessage.source}`)
 
-      if((parsedMessage.type === 'data') && (parsedMessage.source === 'iot')) {
+      if (parsedMessage.type === "data" && parsedMessage.source === "iot") {
         // console.log('Iot messaged')
         //== Add sitting time if sitting
 
-        if(parsedMessage.data.rocketChair) {
+        if (parsedMessage.data.rocketChair) {
           //== Sitting, increase timer
-          console.log('Increase sitting')
+          console.log("Increase sitting");
           // sittingTimer.start()
           // notSittingTimer.stop()
         } else {
           //== Someone is not sitting
-          console.log('Increase notsitting')
+          console.log("Increase notsitting");
           // sittingTimer.stop();
           // notSittingTimer.start();
         }
 
-        if(sittingTimer.getTime() > config.MAX_SITTING_TIME) {
-          let actualTime = (new Date()).getTime();
-          
-          if((actualTime - lastAlertTime) < config.ALERT_TIMEOUT) {
-          // if(((new Date()).getTime() - lastAlertSent) < config.ALERT_TIMEOUT) {
-            console.log('Alert wykurwił')
-            console.log((actualTime - lastAlertSent) + ' < ' + config.ALERT_TIMEOUT)
-            socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR))
-            lastAlertSent = (new Date().getTime())
+        if (sittingTimer.getTime() > config.MAX_SITTING_TIME) {
+          let actualTime = new Date().getTime();
+
+          if (actualTime - lastAlertTime < config.ALERT_TIMEOUT) {
+            // if(((new Date()).getTime() - lastAlertSent) < config.ALERT_TIMEOUT) {
+            console.log("Alert wykurwił");
+            console.log(
+              actualTime - lastAlertSent + " < " + config.ALERT_TIMEOUT
+            );
+            socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR));
+            lastAlertSent = new Date().getTime();
           } else {
-            console.log('Alert niewykurwił')
+            console.log("Alert niewykurwił");
           }
         }
       }
 
-      if (message.type === "data" && message.source === "phone") {
+      if (parsedMessage.type === "data" && parsedMessage.source === "phone") {
         phoneAction.setState(message.data.moving);
       }
-    } catch(err) {
-      socket.send(JSON.stringify({
-        type: 'message',
-        message: JSON.stringify(err)
-      }))
+    } catch (err) {
+      socket.send(
+        JSON.stringify({
+          type: "message",
+          message: JSON.stringify(err)
+        })
+      );
     }
   });
 
