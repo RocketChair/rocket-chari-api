@@ -41,9 +41,6 @@ class AlertAction {
                 console.log('Wykurwił alert')
                 this.socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR))
                 this.lastAlertStoper.restart()
-            } else {
-                console.log('Nie wykurwił')
-
             }
         } else {
             //== Is not sitting
@@ -56,6 +53,7 @@ class AlertAction {
 
             if((this.notSittingCounter.getTime() > config.MAX_NOT_SITTING_TIME) && (this.lastAlertStoper.getTime() > config.ALERT_TIMEOUT)) {
                 this.socket.send(JSON.stringify(alerts.GET_BACK_TO_WORK))
+                this.lastAlertStoper.restart()
             }
         }
       }
