@@ -66,7 +66,7 @@ wss.on("connection", socket => {
         }
 
         if(sittingTimer.getTime() > config.MAX_SITTING_TIME) {
-          socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR))
+          // socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR))
         }
       }
 
