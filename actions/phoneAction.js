@@ -25,7 +25,9 @@ class PhoneAction {
       console.log("sssss - timeIsEnd - go to chair");
       this.socet.send({
         type: "message-phone",
-        message: "go to chair"
+        data: {
+          message: "go to chair"
+        }
       });
     });
   }
@@ -41,7 +43,9 @@ class PhoneAction {
         console.log("sendMessegToRun - go go go");
         this.socet.send({
           type: "message-phone",
-          message: "go go go"
+          data: {
+            message: "go go go"
+          }
         });
       });
     });
