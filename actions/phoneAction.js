@@ -22,8 +22,9 @@ class PhoneAction {
     this.stoperGlobal = new Stoper(10);
     this.stoperGlobal.timeStart();
     this.stoperGlobal.on("timeIsEnd", () => {
+      console.log("sssss - timeIsEnd - go to chair");
       this.socet.send({
-        type: "message",
+        type: "message-phone",
         message: "go to chair"
       });
     });
@@ -37,8 +38,9 @@ class PhoneAction {
   sendMessegToRun() {
     this.errorTimeOut = setTimeout(() => {
       new Stoper(1).on("timeIsEnd", () => {
+        console.log("sendMessegToRun - go go go");
         this.socet.send({
-          type: "message",
+          type: "message-phone",
           message: "go go go"
         });
       });
