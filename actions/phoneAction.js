@@ -2,6 +2,21 @@ let Stoper = require("../stoper");
 
 class PhoneAction {
   constructor(socet) {
+    setTimeout(() => {
+      new Stoper(10).on("timeIsEnd", () => {
+        this.isBreak = true;
+        console.log("sendMessegToRun 11 - go go go");
+        this.socet.send(
+          JSON.stringify({
+            type: "message-phone",
+            data: {
+              message: "go go go"
+            }
+          })
+        );
+      });
+    });
+
     this.isBreak = false;
     this.socet = socet;
     this.stoperLocal = new Stoper();
@@ -10,8 +25,10 @@ class PhoneAction {
 
   setState(state) {
     console.log("state------------->", state);
+    if (this.isBreak === false) {
+      false;
+    }
     if (state) {
-      this.sssss();
       this.killErrorTimeOut();
     } else {
       this.sendMessegToRun();
