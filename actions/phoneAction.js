@@ -70,7 +70,7 @@ class PhoneAction {
 
   killErrorTimeOut() {
     clearInterval(this.errorTimeOut);
-    this.errorTimeOut = () => {};
+    // this.errorTimeOut = () => {};
   }
 
   sendMessegToRun() {

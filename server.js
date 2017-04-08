@@ -49,34 +49,34 @@ wss.on("connection", socket => {
     let lastAlertTime = new Date().getTime();
 
     try {
-    //== Parse data from string
-    parsedMessage = JSON.parse(message);
-    console.log(`Message received: [type: ${parsedMessage.type}]`);
-    console.log(`Message source: [type: ${parsedMessage.source}]`);
-    console.log(`Message data: [type: ${parsedMessage.data}]`);
+      //== Parse data from string
+      parsedMessage = JSON.parse(message);
+      console.log(`Message received: [type: ${parsedMessage.type}]`);
+      console.log(`Message source: [type: ${parsedMessage.source}]`);
+      console.log(`Message data: [type: ${parsedMessage.data}]`);
 
-    broadcastMessage(wss, message);
+      broadcastMessage(wss, message);
 
-    if (parsedMessage.type === "data" && parsedMessage.source === "iot") {
-      alertAction.parseData(parsedMessage);
+      if (parsedMessage.type === "data" && parsedMessage.source === "iot") {
+        alertAction.parseData(parsedMessage);
+      }
+
+      if (parsedMessage.type === "data" && parsedMessage.source === "phone") {
+        console.log("Phone 11111", parsedMessage.data.moving);
+        // phoneAction.setState(parsedMessage.data.moving);
+      }
+      // } catch (err) {
+      //   socket.send(
+      //     JSON.stringify({
+      //       type: "message",
+      //       message: JSON.stringify(err)
+      //     })
+      //   );
+      // }
+    } catch (err) {
+      console.log("Ni chuja, error");
     }
-
-    if (parsedMessage.type === "data" && parsedMessage.source === "phone") {
-      console.log("Phone 11111", parsedMessage.data.moving);
-      phoneAction.setState(parsedMessage.data.moving);
-    }
-    // } catch (err) {
-    //   socket.send(
-    //     JSON.stringify({
-    //       type: "message",
-    //       message: JSON.stringify(err)
-    //     })
-    //   );
-    // }
-    } catch(err) {
-      console.log('Ni chuja, error')
-    }  
-});
+  });
 
   // The connection was closed
   socket.on("close", () => {
@@ -90,7 +90,7 @@ wss.on("connection", socket => {
 //     message: "PING"
 //   });
 
-  // wss.clients is an array of all connected clients
+// wss.clients is an array of all connected clients
 //   wss.clients.forEach(function each(client) {
 //     client.send(json);
 //     console.log("Sent: " + json);
