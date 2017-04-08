@@ -6,6 +6,7 @@ class AlertAction {
   constructor(socket, wss, broadcast) {
     this.socket = socket;
     this.wss = wss;
+    this.broadcast = broadcast;
     this.lastAlertStoper = new Stoper();
     this.lastAlertStoper.timeStart();
 

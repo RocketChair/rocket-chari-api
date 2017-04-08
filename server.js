@@ -49,7 +49,7 @@ wss.on("connection", socket => {
     let lastAlertTime = new Date().getTime();
 
     try {
-    //== Parse data from string
+    // == Parse data from string
     parsedMessage = JSON.parse(message);
     console.log(`Message received: [type: ${parsedMessage.type}]`);
     console.log(`Message source: [type: ${parsedMessage.source}]`);
