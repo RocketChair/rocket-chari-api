@@ -8,11 +8,13 @@ class AlertAction {
     this.lastAlertStoper = new Stoper();
     this.lastAlertStoper.timeStart();
 
-    this.sittingCunter = new Stoper();
-    // this.sittingCunter.timeStart();
+
+    this.sittingState = 0;
+
+    this.sittingCounter = new Stoper();
 
     this.notSittingCounter = new Stoper();
-    // this.notSittingCounter.timeStart();
+    this.notSittingCounter.timeStart();
   }
 
   parseData({type, data, source}) {
@@ -22,9 +24,20 @@ class AlertAction {
 
       if(type === 'data' && source === 'iot') {
         // if(data.rocketChair && this.sittingTime().getTime() > config.MAX_SITTING_TIME ) {
+        
         if(data.rocketChair) {
+            //== Sitting
+            if(!this.sittingState) {
+                //== Not sitting before, start sitting
+                this.sittingState = 1;
+                this.sittingCounter.resume()
+                this.notSittingCounter.pausa()
+            }
+
+
+
           console.log('lastAlertSToper ' + this.lastAlertStoper.getTime())
-            if(this.lastAlertStoper.getTime() > config.ALERT_TIMEOUT) {
+            if((this.sittingCounter.getTime() > config.MAX_SITTING_TIME) && (this.lastAlertStoper.getTime() > config.ALERT_TIMEOUT)) {
                 console.log('Wykurwił alert')
                 this.socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR))
                 this.lastAlertStoper.restart()
@@ -34,8 +47,24 @@ class AlertAction {
             }
         } else {
             //== Is not sitting
+            if(this.sittingState) {
+                //== Start not sitting
+                this.sittingState = 0;
+                this.notSittingCounter.resume();
+                this.sittingCounter.pausa()
+            }
+
+            if((this.notSittingCounter.getTime() > config.MAX_NOT_SITTING_TIME) && (this.lastAlertStoper.getTime() > config.ALERT_TIMEOUT)) {
+                this.socket.send(JSON.stringify(alerts.GET_BACK_TO_WORK))
+            }
         }
       }
+
+      //=== LOGGGING
+      console.log(`sitting: ${this.sittingCounter.getTime()}`)
+      console.log(`notsitting: ${this.notSittingCounter.getTime()}`)
+      console.log(`lastAlert: ${this.lastAlertStoper.getTime()}`)
+      
   }
 }
 module.exports = AlertAction;
