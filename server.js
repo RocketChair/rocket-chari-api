@@ -38,11 +38,8 @@ wss.on("connection", socket => {
   const phoneAction = new PhoneAction(socket);
 
   socket.on("message", message => {
-    let sittingTimer = {
-      getTime: () => {
-        return 50 * 60;
-      }
-    };
+    let sittingTimer = { getTime : () => {return 50*60} }
+    let lastAlertTime = (new Date()).getTime();
 
     try {
       //== Parse data from string
@@ -68,8 +65,18 @@ wss.on("connection", socket => {
           // notSittingTimer.start();
         }
 
-        if (sittingTimer.getTime() > config.MAX_SITTING_TIME) {
-          socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR));
+        if(sittingTimer.getTime() > config.MAX_SITTING_TIME) {
+          let actualTime = (new Date()).getTime();
+          
+          if((actualTime - lastAlertTime) < config.ALERT_TIMEOUT) {
+          // if(((new Date()).getTime() - lastAlertSent) < config.ALERT_TIMEOUT) {
+            console.log('Alert wykurwił')
+            console.log((actualTime - lastAlertSent) + ' < ' + config.ALERT_TIMEOUT)
+            socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR))
+            lastAlertSent = (new Date().getTime())
+          } else {
+            console.log('Alert niewykurwił')
+          }
         }
       }
 
