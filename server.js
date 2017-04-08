@@ -37,7 +37,7 @@ const broadcastMessage = (wss, message) => {
 wss.on("connection", socket => {
   console.log("Opened connection ");
   // When data is received
-  const phoneAction = new PhoneAction(socket);
+  // const phoneAction = new PhoneAction(socket);
   const alertAction = new AlertAction(socket);
 
   socket.on("message", message => {
