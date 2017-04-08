@@ -5,6 +5,7 @@ class Stoper extends EventEmitter {
     super();
     this.timeToEnd = timeToEnd || 0;
     this.time = 0;
+    this.pausaTime = 0;
   }
 
   timeStart() {
@@ -14,6 +15,28 @@ class Stoper extends EventEmitter {
         if (this.timeToEnd > 0) {
           if (this.timeToEnd === this.time) {
             this.emit("timeIsEnd");
+            this.timeEnd();
+          }
+        }
+      },
+      1000
+    );
+  }
+
+  pausa() {
+    this.pausaTime = this.time;
+    clearInterval(this.timeFunction);
+  }
+
+  resume() {
+    this.time = this.pausaTime;
+    this.timeFunction = setInterval(
+      () => {
+        this.time += 1;
+        if (this.timeToEnd > 0) {
+          if (this.timeToEnd === this.time) {
+            this.emit("timeIsEnd");
+            this.timeEnd();
           }
         }
       },
