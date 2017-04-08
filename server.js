@@ -48,7 +48,7 @@ wss.on("connection", socket => {
     };
     let lastAlertTime = new Date().getTime();
 
-    try {
+    // try {
       //== Parse data from string
       parsedMessage = JSON.parse(message);
       console.log(`Message received: [type: ${parsedMessage.type}]`);
@@ -65,14 +65,14 @@ wss.on("connection", socket => {
         console.log("Phone 11111", message.data.moving);
         phoneAction.setState(message.data.moving);
       }
-    } catch (err) {
-      socket.send(
-        JSON.stringify({
-          type: "message",
-          message: JSON.stringify(err)
-        })
-      );
-    }
+    // } catch (err) {
+    //   socket.send(
+    //     JSON.stringify({
+    //       type: "message",
+    //       message: JSON.stringify(err)
+    //     })
+    //   );
+    // }
   });
 
   // The connection was closed
