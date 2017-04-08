@@ -94,6 +94,6 @@ const broadcast = () => {
   });
 };
 
-setInterval(broadcast, 30000);
+setInterval(broadcast, 3000);
 
 console.log("App started at port " + port_number);
