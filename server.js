@@ -14,7 +14,7 @@ const server = http.createServer((request, response) => {
     return;
   }
   // console.log("request");
-  // response.end("Hello2");
+  response.end("Hello from web socket server");
 });
 server.listen(port_number);
 
@@ -94,6 +94,6 @@ const broadcast = () => {
   });
 };
 
-setInterval(broadcast, 3000);
+setInterval(broadcast, 10000);
 
 console.log("App started at port " + port_number);
