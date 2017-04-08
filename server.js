@@ -48,7 +48,7 @@ wss.on("connection", socket => {
     };
     let lastAlertTime = new Date().getTime();
 
-    // try {
+    try {
     //== Parse data from string
     parsedMessage = JSON.parse(message);
     console.log(`Message received: [type: ${parsedMessage.type}]`);
@@ -73,7 +73,10 @@ wss.on("connection", socket => {
     //     })
     //   );
     // }
-  });
+    } catch(err) {
+      console.log('Ni chuja, error')
+    }  
+});
 
   // The connection was closed
   socket.on("close", () => {
