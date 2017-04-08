@@ -1,6 +1,9 @@
 const http = require("http");
 const port_number = process.env.PORT || 8880;
 const WSS = require("ws").Server;
+const PhoneAction = require("./actions/phoneAction");
+// const Stoper = require("./stoper");
+// const stoper = new Stoper();
 
 const server = http.createServer((request, response) => {
   response.setHeader("Access-Control-Allow-Origin", "*");
@@ -17,27 +20,24 @@ const server = http.createServer((request, response) => {
 });
 server.listen(port_number);
 
-const { parseAction, parseAlert } = require('./actions')
+const { parseAction, parsePhoneData } = require("./actions");
 
 // Start the server
 const wss = new WSS({
   server: server
 });
 
-
-
 const broadcastMessage = (wss, message) => {
   wss.clients.forEach(client => {
-    client.send(message)
-  })
-}
-
-
+    client.send(message);
+  });
+};
+const phoneAction = new PhoneAction({});
 // When a connection is established
 wss.on("connection", socket => {
   console.log("Opened connection ");
-
-  let actionsHistory = ['STITIN', 'SITING', 'WALKING', 'RUNNING', 'SITIG'];
+  const phoneAction = new PhoneAction(wss);
+  let actionsHistory = ["STITIN", "SITING", "WALKING", "RUNNING", "SITIG"];
 
   // Send data back to the client
   const json = JSON.stringify({
@@ -45,29 +45,27 @@ wss.on("connection", socket => {
   });
   socket.send(json);
 
-
   // When data is received
   socket.on("message", message => {
     let parsedMessage;
     try {
-      parsedMessage = JSON.parse(message)
+      parsedMessage = JSON.parse(message);
       console.log(`Message received: [type: ${parsedMessage.type}`);
       broadcastMessage(wss, message);
 
-      if(message.type === 'data' && message.source === 'iot') {
-
+      if (message.type === "data" && message.source === "iot") {
       }
 
-      if(message.type === 'data' && message.source === 'phone') {
-
+      if (message.type === "data" && message.source === "phone") {
+        phoneAction.setState(message.data.moving);
       }
-
-
-    } catch(err) {
-      socket.send(JSON.stringify({
-        type: 'message',
-        message: 'Error message'
-      }))
+    } catch (err) {
+      socket.send(
+        JSON.stringify({
+          type: "message",
+          message: "Error message"
+        })
+      );
     }
   });
 
