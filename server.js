@@ -14,7 +14,7 @@ const server = http.createServer((request, response) => {
     return;
   }
   // console.log("request");
-  // response.end("Hello2");
+  response.end("Hello from web socket server");
 });
 server.listen(port_number);
 

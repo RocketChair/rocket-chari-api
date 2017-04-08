@@ -31,7 +31,7 @@ class AlertAction {
                 //== Not sitting before, start sitting
                 this.sittingState = 1;
                 this.sittingCounter.resume()
-                this.notSittingCounter.pausa()
+                this.notSittingCounter.restart()
             }
 
 
@@ -51,7 +51,7 @@ class AlertAction {
                 //== Start not sitting
                 this.sittingState = 0;
                 this.notSittingCounter.resume();
-                this.sittingCounter.pausa()
+                this.sittingCounter.restart()
             }
 
             if((this.notSittingCounter.getTime() > config.MAX_NOT_SITTING_TIME) && (this.lastAlertStoper.getTime() > config.ALERT_TIMEOUT)) {
