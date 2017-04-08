@@ -12,15 +12,19 @@ const server = http.createServer((request, response) => {
     response.end();
     return;
   }
-  console.log("request");
-  response.end("Hello2");
+  // console.log("request");
+  // response.end("Hello2");
 });
 server.listen(port_number);
+
+const { parseAction, parseAlert } = require('./actions')
 
 // Start the server
 const wss = new WSS({
   server: server
 });
+
+
 
 const broadcastMessage = (wss, message) => {
   wss.clients.forEach(client => {
@@ -33,11 +37,14 @@ const broadcastMessage = (wss, message) => {
 wss.on("connection", socket => {
   console.log("Opened connection ");
 
+  let actionsHistory = ['STITIN', 'SITING', 'WALKING', 'RUNNING', 'SITIG'];
+
   // Send data back to the client
   const json = JSON.stringify({
     message: "Gotcha"
   });
   socket.send(json);
+
 
   // When data is received
   socket.on("message", message => {
@@ -46,19 +53,22 @@ wss.on("connection", socket => {
       parsedMessage = JSON.parse(message)
       console.log(`Message received: [type: ${parsedMessage.type}`);
       broadcastMessage(wss, message);
+
+      if(message.type === 'data' && message.source === 'iot') {
+
+      }
+
+      if(message.type === 'data' && message.source === 'phone') {
+
+      }
+
+
     } catch(err) {
       socket.send(JSON.stringify({
         type: 'message',
         message: 'Error message'
       }))
     }
-
-    // socket.send(
-    //   JSON.stringify({
-    //     message: message
-    //   })
-    // );
-    // console.log("Received: " + message);
   });
 
   // The connection was closed
