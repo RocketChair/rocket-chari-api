@@ -41,16 +41,24 @@ wss.on("connection", socket => {
 
   // When data is received
   socket.on("message", message => {
-    let parsedMessage = JSON.parse(message)
-    console.log(`Message received: [type: ${parsedMessage.type}`);
-    
-    broadcastMessage(wss, message);
-    socket.send(
-      JSON.stringify({
-        message: message
-      })
-    );
-    console.log("Received: " + message);
+    let parsedMessage;
+    try {
+      parsedMessage = JSON.parse(message)
+      console.log(`Message received: [type: ${parsedMessage.type}`);
+      broadcastMessage(wss, message);
+    } catch(err) {
+      socket.send(JSON.stringify({
+        type: 'message',
+        message: 'Error message'
+      }))
+    }
+
+    // socket.send(
+    //   JSON.stringify({
+    //     message: message
+    //   })
+    // );
+    // console.log("Received: " + message);
   });
 
   // The connection was closed
