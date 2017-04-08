@@ -9,7 +9,7 @@ class PhoneAction {
   }
 
   setState(state) {
-    console.log("state", state);
+    console.log("state------------->", state);
     if (state) {
       this.sssss();
       this.killErrorTimeOut();
@@ -22,9 +22,12 @@ class PhoneAction {
     this.stoperGlobal = new Stoper(10);
     this.stoperGlobal.timeStart();
     this.stoperGlobal.on("timeIsEnd", () => {
+      console.log("sssss - timeIsEnd - go to chair");
       this.socet.send({
-        type: "message",
-        message: "go to chair"
+        type: "message-phone",
+        data: {
+          message: "go to chair"
+        }
       });
     });
   }
@@ -37,9 +40,12 @@ class PhoneAction {
   sendMessegToRun() {
     this.errorTimeOut = setTimeout(() => {
       new Stoper(1).on("timeIsEnd", () => {
+        console.log("sendMessegToRun - go go go");
         this.socet.send({
-          type: "message",
-          message: "go go go"
+          type: "message-phone",
+          data: {
+            message: "go go go"
+          }
         });
       });
     });

@@ -41,26 +41,38 @@ wss.on("connection", socket => {
   const alertAction = new AlertAction(socket);
 
   socket.on("message", message => {
-    let sittingTimer = { getTime : () => {return 50*60} }
-    let lastAlertTime = (new Date()).getTime();
-    let parsedMessage;
+    let sittingTimer = {
+      getTime: () => {
+        return 50 * 60;
+      }
+    };
+    let lastAlertTime = new Date().getTime();
 
-    // try {
+    try {
+      //== Parse data from string
+      parsedMessage = JSON.parse(message);
+      console.log(`Message received: [type: ${parsedMessage.type}]`);
+      console.log(`Message source: [type: ${parsedMessage.source}]`);
+      console.log(`Message data: [type: ${parsedMessage.data}]`);
 
-      //== TRY PARSING MESSAGE
-      parsedMessage = JSON.parse(message)
-
-      //== LOG MESSAGE RECEIVE
-      console.log(`${parsedMessage.type} received.`);
       broadcastMessage(wss, message);
 
       if((parsedMessage.type === 'data') && (parsedMessage.source === 'iot')) {
         alertAction.parseData(parsedMessage);
       }
 
-      if (message.type === "data" && message.source === "phone") {
+      if (parsedMessage.type === "data" && parsedMessage.source === "phone") {
+        console.log("Phone 11111", message.data.moving);
         phoneAction.setState(message.data.moving);
       }
+    } catch (err) {
+      socket.send(
+        JSON.stringify({
+          type: "message",
+          message: JSON.stringify(err)
+        })
+      );
+    }
   });
 
   // The connection was closed
