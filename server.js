@@ -2,8 +2,6 @@ const http = require("http");
 const port_number = process.env.PORT || 8880;
 const WSS = require("ws").Server;
 const PhoneAction = require("./actions/phoneAction");
-// const Stoper = require("./stoper");
-// const stoper = new Stoper();
 
 const server = http.createServer((request, response) => {
   response.setHeader("Access-Control-Allow-Origin", "*");
@@ -20,7 +18,8 @@ const server = http.createServer((request, response) => {
 });
 server.listen(port_number);
 
-const { parseAction, parsePhoneData } = require("./actions");
+const config = require("./config");
+const alerts = require("./alerts");
 
 // Start the server
 const wss = new WSS({
@@ -36,24 +35,39 @@ const phoneAction = new PhoneAction({});
 // When a connection is established
 wss.on("connection", socket => {
   console.log("Opened connection ");
-  const phoneAction = new PhoneAction(wss);
-  let actionsHistory = ["STITIN", "SITING", "WALKING", "RUNNING", "SITIG"];
-
-  // Send data back to the client
-  const json = JSON.stringify({
-    message: "Gotcha"
-  });
-  socket.send(json);
-
   // When data is received
   socket.on("message", message => {
-    let parsedMessage;
-    try {
-      parsedMessage = JSON.parse(message);
-      console.log(`Message received: [type: ${parsedMessage.type}`);
-      broadcastMessage(wss, message);
+    let sittingTimer = {
+      getTime: () => {
+        return 50 * 60;
+      }
+    };
 
-      if (message.type === "data" && message.source === "iot") {
+    try {
+      //Parse data from string
+      parsedMessage = JSON.parse(message);
+      console.log(`Message received: [type: ${parsedMessage.type}]`);
+      broadcastMessage(wss, message);
+      console.log(`type: ${parsedMessage.type}`);
+      console.log(`source: ${parsedMessage.source}`);
+      if (parsedMessage.type === "data" && parsedMessage.source === "iot") {
+        console.log("Iot messaged");
+        //Add sitting time if sitting
+        if (parsedMessage.data.rocketChair) {
+          // Sitting, increase timer
+          console.log("Increase sitting");
+          // sittingTimer.start()
+          // notSittingTimer.stop()
+        } else {
+          // Someone is not sitting
+          console.log("Increase notsitting");
+          // sittingTimer.stop();
+          // notSittingTimer.start();
+        }
+
+        if (sittingTimer.getTime() > config.MAX_SITTING_TIME) {
+          socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR));
+        }
       }
 
       if (message.type === "data" && message.source === "phone") {
@@ -63,7 +77,7 @@ wss.on("connection", socket => {
       socket.send(
         JSON.stringify({
           type: "message",
-          message: "Error message"
+          message: JSON.stringify(err)
         })
       );
     }
