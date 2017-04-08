@@ -49,6 +49,9 @@ wss.on("connection", socket => {
       //== Parse data from string
       parsedMessage = JSON.parse(message);
       console.log(`Message received: [type: ${parsedMessage.type}]`);
+      console.log(`Message source: [type: ${parsedMessage.source}]`);
+      console.log(`Message data: [type: ${parsedMessage.data}]`);
+
       broadcastMessage(wss, message);
       // console.log(`type: ${parsedMessage.type}`)
       // console.log(`source: ${parsedMessage.source}`)
