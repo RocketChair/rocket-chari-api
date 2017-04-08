@@ -36,7 +36,8 @@ wss.on("connection", socket => {
   socket.on("message", message => {
     socket.send(
       JSON.stringify({
-        message: message
+        message: message,
+        type: "data"
       })
     );
     console.log("Received: " + message);
