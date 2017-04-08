@@ -3,8 +3,9 @@ const config = require('../config');
 const alerts = require('../alerts')
 
 class AlertAction {
-  constructor(socket) {
+  constructor(socket, wss, broadcast) {
     this.socket = socket;
+    this.wss = wss;
     this.lastAlertStoper = new Stoper();
     this.lastAlertStoper.timeStart();
 
@@ -40,6 +41,7 @@ class AlertAction {
             if((this.sittingCounter.getTime() > config.MAX_SITTING_TIME) && (this.lastAlertStoper.getTime() > config.ALERT_TIMEOUT)) {
                 console.log('Wykurwił alert')
                 this.socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR))
+                this.broadcast(this.wss, JSON.stringify(alerts.GET_UP_FROM_CHAIR))
                 this.lastAlertStoper.restart()
             }
         } else {
@@ -53,6 +55,7 @@ class AlertAction {
 
             if((this.notSittingCounter.getTime() > config.MAX_NOT_SITTING_TIME) && (this.lastAlertStoper.getTime() > config.ALERT_TIMEOUT)) {
                 this.socket.send(JSON.stringify(alerts.GET_BACK_TO_WORK))
+                this.broadcast(this.wss, JSON.stringify(alerts.GET_BACK_TO_WORK))
                 this.lastAlertStoper.restart()
             }
         }

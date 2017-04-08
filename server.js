@@ -38,7 +38,7 @@ wss.on("connection", socket => {
   console.log("Opened connection ");
   // When data is received
   const phoneAction = new PhoneAction(socket);
-  const alertAction = new AlertAction(wss);
+  const alertAction = new AlertAction(socket, wss, broadcastMessage);
 
   socket.on("message", message => {
     let sittingTimer = {
