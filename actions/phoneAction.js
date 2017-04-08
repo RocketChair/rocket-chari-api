@@ -2,25 +2,42 @@ let Stoper = require("../stoper");
 
 class PhoneAction {
   constructor(socet) {
-    setTimeout(() => {
-      new Stoper(10).on("timeIsEnd", () => {
-        this.isBreak = true;
-        console.log("sendMessegToRun 11 - go go go");
-        this.socet.send(
-          JSON.stringify({
-            type: "message-phone",
-            data: {
-              message: "go go go"
-            }
-          })
-        );
-      });
-    });
+    setTimeout(
+      () => {
+        new Stoper(10).on("timeIsEnd", () => {
+          this.isBreak = true;
+          console.log("sendMessegToRun 11 - go go go");
+          this.socet.send(
+            JSON.stringify({
+              type: "message-phone",
+              data: {
+                message: "go go go"
+              }
+            })
+          );
+        });
+      },
+      10000
+    );
 
     this.isBreak = false;
     this.socet = socet;
     this.stoperLocal = new Stoper();
     this.errorTimeOut = () => {};
+
+    setTimeout(
+      () => {
+        this.socet.send(
+          JSON.stringify({
+            type: "message-phone",
+            data: {
+              message: "go to chai"
+            }
+          })
+        );
+      },
+      20000
+    );
   }
 
   setState(state) {
@@ -71,7 +88,5 @@ class PhoneAction {
       });
     });
   }
-
-  gogogo() {}
 }
 module.exports = PhoneAction;
