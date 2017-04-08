@@ -31,11 +31,12 @@ const broadcastMessage = (wss, message) => {
     client.send(message);
   });
 };
-const phoneAction = new PhoneAction({});
 // When a connection is established
 wss.on("connection", socket => {
   console.log("Opened connection ");
   // When data is received
+  const phoneAction = new PhoneAction(socket);
+
   socket.on("message", message => {
     let sittingTimer = {
       getTime: () => {
