@@ -41,23 +41,25 @@ wss.on("connection", socket => {
   socket.on("message", message => {
     let sittingTimer = { getTime : () => {return 50*60} }
 
-    // try {
-      //Parse data from string
+    try {
+      //== Parse data from string
       parsedMessage = JSON.parse(message)
       console.log(`Message received: [type: ${parsedMessage.type}]`);
       broadcastMessage(wss, message);
-      console.log(`type: ${parsedMessage.type}`)
-      console.log(`source: ${parsedMessage.source}`)
+      // console.log(`type: ${parsedMessage.type}`)
+      // console.log(`source: ${parsedMessage.source}`)
+
       if((parsedMessage.type === 'data') && (parsedMessage.source === 'iot')) {
-        console.log('Iot messaged')
-        //Add sitting time if sitting
+        // console.log('Iot messaged')
+        //== Add sitting time if sitting
+
         if(parsedMessage.data.rocketChair) {
-          // Sitting, increase timer
+          //== Sitting, increase timer
           console.log('Increase sitting')
           // sittingTimer.start()
           // notSittingTimer.stop()
         } else {
-          // Someone is not sitting
+          //== Someone is not sitting
           console.log('Increase notsitting')
           // sittingTimer.stop();
           // notSittingTimer.start();
@@ -72,12 +74,12 @@ wss.on("connection", socket => {
         actions.parsePhoneData(wss, message.data)
 
       }
-    // } catch(err) {
-    //   socket.send(JSON.stringify({
-    //     type: 'message',
-    //     message: JSON.stringify(err)
-    //   }))
-    // }
+    } catch(err) {
+      socket.send(JSON.stringify({
+        type: 'message',
+        message: JSON.stringify(err)
+      }))
+    }
   });
 
   // The connection was closed

@@ -2,7 +2,7 @@ const config = require('../config')
 
 const alerts = {
     GET_UP_FROM_CHAIR: {
-        type: 'alert',
+        type: 'ALERT',
         message: 'Move your ass!'
     }
 }
