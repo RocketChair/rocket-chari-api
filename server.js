@@ -82,17 +82,17 @@ wss.on("connection", socket => {
 });
 
 // Every three seconds broadcast "{ message: 'Hello hello!' }" to all connected clients
-const broadcast = () => {
-  const json = JSON.stringify({
-    message: "PING"
-  });
+// const broadcast = () => {
+//   const json = JSON.stringify({
+//     message: "PING"
+//   });
 
   // wss.clients is an array of all connected clients
-  wss.clients.forEach(function each(client) {
-    client.send(json);
-    console.log("Sent: " + json);
-  });
-};
+//   wss.clients.forEach(function each(client) {
+//     client.send(json);
+//     console.log("Sent: " + json);
+//   });
+// };
 
 setInterval(broadcast, 10000);
 
