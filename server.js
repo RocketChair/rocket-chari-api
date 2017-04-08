@@ -94,6 +94,6 @@ wss.on("connection", socket => {
 //   });
 // };
 
-setInterval(broadcast, 10000);
+// setInterval(broadcast, 10000);
 
 console.log("App started at port " + port_number);
