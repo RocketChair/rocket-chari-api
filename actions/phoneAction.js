@@ -9,7 +9,7 @@ class PhoneAction {
   }
 
   setState(state) {
-    console.log("state", state);
+    console.log("state------------->", state);
     if (state) {
       this.sssss();
       this.killErrorTimeOut();

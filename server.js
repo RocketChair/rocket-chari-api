@@ -90,7 +90,7 @@ wss.on("connection", socket => {
       }
 
       if (parsedMessage.type === "data" && parsedMessage.source === "phone") {
-        console.log("Phone 11111");
+        console.log("Phone 11111", message.data.moving);
         phoneAction.setState(message.data.moving);
       }
     } catch (err) {
