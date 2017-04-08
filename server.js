@@ -1,6 +1,7 @@
 const http = require("http");
 const port_number = process.env.PORT || 8880;
 const WSS = require("ws").Server;
+const PhoneAction = require("./actions/phoneAction");
 
 const server = http.createServer((request, response) => {
   response.setHeader("Access-Control-Allow-Origin", "*");
@@ -17,9 +18,8 @@ const server = http.createServer((request, response) => {
 });
 server.listen(port_number);
 
-const { parseAction, parseAlert } = require('./actions')
-const config = require('./config')
-const alerts = require('./alerts')
+const config = require("./config");
+const alerts = require("./alerts");
 
 // Start the server
 const wss = new WSS({
@@ -28,18 +28,20 @@ const wss = new WSS({
 
 const broadcastMessage = (wss, message) => {
   wss.clients.forEach(client => {
-    client.send(message)
-  })
-}
-
-
+    client.send(message);
+  });
+};
+const phoneAction = new PhoneAction({});
 // When a connection is established
 wss.on("connection", socket => {
   console.log("Opened connection ");
-
   // When data is received
   socket.on("message", message => {
-    let sittingTimer = { getTime : () => {return 50*60} }
+    let sittingTimer = {
+      getTime: () => {
+        return 50 * 60;
+      }
+    };
 
     try {
       //== Parse data from string
@@ -65,14 +67,13 @@ wss.on("connection", socket => {
           // notSittingTimer.start();
         }
 
-        if(sittingTimer.getTime() > config.MAX_SITTING_TIME) {
-          // socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR))
+        if (sittingTimer.getTime() > config.MAX_SITTING_TIME) {
+          socket.send(JSON.stringify(alerts.GET_UP_FROM_CHAIR));
         }
       }
 
-      if(message.type === 'data' && message.source === 'phone') {
-        actions.parsePhoneData(wss, message.data)
-
+      if (message.type === "data" && message.source === "phone") {
+        phoneAction.setState(message.data.moving);
       }
     } catch(err) {
       socket.send(JSON.stringify({
