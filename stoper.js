@@ -25,8 +25,8 @@ class Stoper extends EventEmitter {
     return (this.time += Seconds);
   }
 
-  tiemEnd() {
-    this.tiem = 0;
+  timeEnd() {
+    this.time = 0;
     clearInterval(this.timeFunction);
   }
 
@@ -35,7 +35,7 @@ class Stoper extends EventEmitter {
   }
 
   restart() {
-    this.tiemEnd();
+    this.timeEnd();
     this.timeStart();
   }
 }
