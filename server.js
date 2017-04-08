@@ -41,6 +41,9 @@ wss.on("connection", socket => {
 
   // When data is received
   socket.on("message", message => {
+    let parsedMessage = JSON.parse(message)
+    console.log(`Message received: [type: ${parsedMessage.type}`);
+    
     broadcastMessage(wss, message);
     socket.send(
       JSON.stringify({
