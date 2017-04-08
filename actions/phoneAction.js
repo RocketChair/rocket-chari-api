@@ -5,11 +5,14 @@ class PhoneAction {
     this.isBreak = false;
     this.socet = socet;
     this.stoperLocal = new Stoper();
+    this.errorTimeOut = () => {};
   }
 
   setState(state) {
+    console.log("state", state);
     if (state) {
       this.sssss();
+      this.killErrorTimeOut();
     } else {
       sendMessegToRun();
     }
@@ -26,8 +29,13 @@ class PhoneAction {
     });
   }
 
+  killErrorTimeOut() {
+    clearInterval(this.errorTimeOut);
+    this.errorTimeOut = () => {};
+  }
+
   sendMessegToRun() {
-    setTimeout(() => {
+    this.errorTimeOut = setTimeout(() => {
       new Stoper(1).on("timeIsEnd", () => {
         this.socet.send({
           type: "message",

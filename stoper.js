@@ -15,7 +15,7 @@ class Stoper extends EventEmitter {
         if (this.timeToEnd > 0) {
           if (this.timeToEnd === this.time) {
             this.emit("timeIsEnd");
-            this.tiemEnd();
+            this.timeEnd();
           }
         }
       },
@@ -36,7 +36,7 @@ class Stoper extends EventEmitter {
         if (this.timeToEnd > 0) {
           if (this.timeToEnd === this.time) {
             this.emit("timeIsEnd");
-            this.tiemEnd();
+            this.timeEnd();
           }
         }
       },
@@ -48,7 +48,7 @@ class Stoper extends EventEmitter {
     return (this.time += Seconds);
   }
 
-  tiemEnd() {
+  timeEnd() {
     this.tiem = 0;
     clearInterval(this.timeFunction);
   }
@@ -58,7 +58,7 @@ class Stoper extends EventEmitter {
   }
 
   restart() {
-    this.tiemEnd();
+    this.timeEnd();
     this.timeStart();
   }
 }
