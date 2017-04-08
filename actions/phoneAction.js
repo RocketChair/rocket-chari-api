@@ -14,7 +14,7 @@ class PhoneAction {
       this.sssss();
       this.killErrorTimeOut();
     } else {
-      sendMessegToRun();
+      this.sendMessegToRun();
     }
   }
 
@@ -50,5 +50,7 @@ class PhoneAction {
       });
     });
   }
+
+  gogogo() {}
 }
 module.exports = PhoneAction;
